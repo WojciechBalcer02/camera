@@ -18,6 +18,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:text="zrób zdj"
+        android:id="@+id/button"
         ></Button>
 
 </RelativeLayout>
