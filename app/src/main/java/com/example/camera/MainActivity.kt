@@ -39,6 +39,18 @@ class MainActivity : AppCompatActivity() {
             binding.imageView.setImageBitmap(myPicture)
         }
     }
-
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == 123 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
+        {
+            val binding = ActivityMainBinding.inflate(layoutInflater)
+            setContentView(binding.root)
+            binding.button.isEnabled = true
+        }
+    }
 
 }
