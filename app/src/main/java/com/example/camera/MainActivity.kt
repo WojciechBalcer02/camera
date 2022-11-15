@@ -12,12 +12,15 @@ import android.location.LocationManager
 import android.location.LocationRequest
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Looper
 import android.provider.MediaStore
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import com.example.camera.databinding.ActivityMainBinding
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 
 
@@ -37,6 +40,10 @@ class MainActivity : AppCompatActivity() {
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
+        getPos.setOnClickListener{
+            getLastLocation()
+        }
+
         binding.button.isEnabled = false
         if (ActivityCompat.checkSelfPermission(this,Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), 123)
@@ -49,13 +56,39 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun getLocation(){
+    private fun getLastLocation(){
         if (CheckPermission()){
             if(isLocationEnabled()){
+                fusedLocationProviderClient.lastLocation.addOnCompleteListener { task ->
+                    var location:Location? = task.result
+                    if(location==null){
 
+                        getNewLocation()
+                    }else{
+                        Locationtxt.text = "your current coordinates are: \nLat:"+ location.latitude +"; Long: "+location.longitude
+                    }
+                }
             }else{
                 Toast.makeText(this,"prosze pozwolic na korzystanie lokalizacji",Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+
+    private fun getNewLocation(){
+        locationRequest = LocationRequest()
+        locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        locationRequest.interval = 0
+        locationRequest.fastesInterval = 0
+        locationRequest.numUpdates = 2
+        fusedLocationProviderClient!!.requestLocationUpdates(
+            locationRequest.locationCallback, Looper.myLooper()
+        )
+    }
+
+    private val locationCallback = object : LocationCallback(){
+        override fun onLocationResult(p0: LocationResult) {
+            var lastLocation:Location! = p0:lastLocation
+            Locationtxt.text = "your current coordinates are: \nLat:"+ location.latitude +"; Long: "+location.longitude
         }
     }
 

@@ -9,11 +9,11 @@
         android:layout_height="wrap_content"
         android:text="your location"
         android:layout_centerHorizontal="true"
-        android:id="@+id/textLocation"
+        android:id="@+id/Locationtxt"
         android:layout_margin="50dp"
         ></TextView>
     <Button
-        android:layout_below="@+id/textLocation"
+        android:layout_below="@+id/Locationtxt"
         android:layout_centerHorizontal="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
