@@ -4,7 +4,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
-
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="your location"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/textLocation"
+        android:layout_margin="50dp"
+        ></TextView>
+    <Button
+        android:layout_below="@+id/textLocation"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="lokalizacja"
+        ></Button>
     <ImageView
         android:layout_width="200dp"
         android:layout_height="200dp"
