@@ -1,6 +1,7 @@
 package com.example.camera
 
 import android.Manifest
+import android.app.DownloadManager.Request
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -12,6 +13,8 @@ import com.example.camera.databinding.ActivityMainBinding
 
 
 class MainActivity : AppCompatActivity() {
+
+    private var PERMISSION_ID = 52
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityMainBinding.inflate(layoutInflater)
@@ -52,5 +55,23 @@ class MainActivity : AppCompatActivity() {
             binding.button.isEnabled = true
         }
     }
+    //gps below
+    private fun CheckPermission():Boolean{
+        if(
+            ActivityCompat.checkSelfPermission(this,android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
+            ActivityCompat.checkSelfPermission(this,android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        ){
+            return true
+        }
+        return false
+    }
+
+    private fun RequestPermission(){
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION),PERMISSION_ID
+        )
+    }
+
 
 }
