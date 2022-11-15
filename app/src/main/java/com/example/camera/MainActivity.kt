@@ -7,9 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.location.Location
-import android.location.LocationManager
-import android.location.LocationRequest
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Looper
@@ -18,13 +15,12 @@ import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import com.example.camera.databinding.ActivityMainBinding
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationCallback
-import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.*
 
 
 class MainActivity : AppCompatActivity() {
+
+    lateinit var binding: ActivityMainBinding
 
     lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
@@ -35,12 +31,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
 
-        getPos.setOnClickListener{
+        binding.LocationBtn.setOnClickListener{
             getLastLocation()
         }
 
@@ -59,15 +55,17 @@ class MainActivity : AppCompatActivity() {
     private fun getLastLocation(){
         if (CheckPermission()){
             if(isLocationEnabled()){
-                fusedLocationProviderClient.lastLocation.addOnCompleteListener { task ->
-                    var location:Location? = task.result
-                    if(location==null){
+                try {
+                    fusedLocationProviderClient.lastLocation.addOnCompleteListener { task ->
+                        var location = task.result
+                        if(location==null){
 
-                        getNewLocation()
-                    }else{
-                        Locationtxt.text = "your current coordinates are: \nLat:"+ location.latitude +"; Long: "+location.longitude
+                            getNewLocation()
+                        }else{
+                            binding.Locationtxt.text = "your current coordinates are: \nLat:"+ location.latitude +"; Long: "+location.longitude
+                        }
                     }
-                }
+                } catch (e: SecurityException) {}
             }else{
                 Toast.makeText(this,"prosze pozwolic na korzystanie lokalizacji",Toast.LENGTH_SHORT).show()
             }
@@ -75,20 +73,23 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getNewLocation(){
-        locationRequest = LocationRequest()
+        locationRequest = com.google.android.gms.location.LocationRequest()
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         locationRequest.interval = 0
-        locationRequest.fastesInterval = 0
+        locationRequest.fastestInterval = 0
         locationRequest.numUpdates = 2
-        fusedLocationProviderClient!!.requestLocationUpdates(
-            locationRequest.locationCallback, Looper.myLooper()
-        )
+        try {
+            fusedLocationProviderClient!!.requestLocationUpdates(
+                locationRequest.locationCallback, Looper.myLooper()
+            )
+        } catch (e: SecurityException) {}
+
     }
 
     private val locationCallback = object : LocationCallback(){
         override fun onLocationResult(p0: LocationResult) {
-            var lastLocation:Location! = p0:lastLocation
-            Locationtxt.text = "your current coordinates are: \nLat:"+ location.latitude +"; Long: "+location.longitude
+            var lastLocation = p0.lastLocation
+            binding.Locationtxt.text = "your current coordinates are: \nLat:"+ lastLocation.latitude +"; Long: "+lastLocation.longitude
         }
     }
 
